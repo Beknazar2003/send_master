@@ -1,27 +1,17 @@
 const express = require('express')
 const router = express.Router()
-const fetch = require('fetch')
-const { BOT_TOKEN, CHAT_ID } = require('../config.json')
+const {sendMessageToChat} = require("../bot/bot");
 
 router.get('/', (req, res) => {
   res.render('index')
 })
-
-router.post('/send', (req, res) => {
-  const { header, text } = req.body
-
-  const responseMsg = `\*\*${header}\*\*\n${text}`
-
-  fetch.fetchUrl(
-    `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${responseMsg}`,
-    () => {
-      res.redirect('/done')
-    }
-  )
-})
-
-router.get('/done', (req, res) => {
+router.post('/send', async (req, res) => {
+  const {body} = req
+  let message = ''
+  for (let key in body) {
+    message += `${key}: ${body[key]}\n`
+  }
+  await sendMessageToChat(message)
   res.render('done')
 })
-
 module.exports = router
