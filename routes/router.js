@@ -24,8 +24,7 @@ router.post('/bot/send', async (req, res) => {
     res.json({result: {message: body}})
 })
 router.get('/bot/get-ip-info', async (req, res) => {
-    const ip = req.socket.remoteAddress;
-    console.log(ip)
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
     res.json({
         result: {
             ip,
